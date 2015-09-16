@@ -1,0 +1,43 @@
+params:
+  performance: 0.2
+  vpn_performance: 0.2
+  number_of_vpn_sessions: 0.1
+  number_of_sessions: 0.1
+  count_of_vpn_protocols: 0.2
+  price: 0.2
+objects:
+  a1:
+    performance: 450
+    vpn_performance: 225
+    number_of_vpn_sessions: 750
+    number_of_sessions: 280000
+    count_of_vpn_protocols: 1
+    price: 74025
+  a2:
+    performance: 6900
+    vpn_performance: 450
+    number_of_vpn_sessions: 1200
+    number_of_sessions: 1200000
+    count_of_vpn_protocols: 4
+    price: 195000
+  a3:
+    performance: 375
+    vpn_performance: 175
+    number_of_vpn_sessions: 500
+    number_of_sessions: 64000
+    count_of_vpn_protocols: 3
+    price: 30000
+  a4:
+    performance: 90
+    vpn_performance: 40
+    number_of_vpn_sessions: 10
+    number_of_sessions: 8000
+    count_of_vpn_protocols: 4
+    price: 56000
+  a5:
+    performance: 1000
+    vpn_performance: 100
+    number_of_vpn_sessions: 2000
+    number_of_sessions: 500000
+    count_of_vpn_protocols: 1
+    price: 50000
