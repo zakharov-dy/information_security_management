@@ -1,0 +1,10 @@
+set1:
+  criteria: ['1', '2', '3', '4']
+  costs: ['1', '2']
+  alternatives:
+    alter1:
+      criteria: [9, 3, 3, 6, 4]
+      costs: [3, 5]
+    alter2:
+      criteria: [4, 6, 7, 3, 2]
+      costs: [4, 2]
