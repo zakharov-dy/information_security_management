@@ -6,11 +6,11 @@ PATH = 'config2.yml'
 
 # Грузим данные из файла конфигурации
 config = YAML::load(open(PATH))
-
+$general = []
+count = -1
 config.each_key do |set_name|
    # Для удобства определяем набор средств защиты
    current_set = config[set_name]
-
    # Определяем названия критериев и издержек
    criteria = current_set['criteria']
    costs = current_set['costs']
@@ -85,7 +85,66 @@ config.each_key do |set_name|
             ( alternative_costs[costs_index] - min ).to_f / ( max - min )
          alternative['sum_costs'] += alternative_costs[costs_index]
       end
+
    end
 
-   puts current_set
+   $general << current_set
 end
+
+# Этапы:
+# 0 - каждый set записываем в массив
+# 1 - формирование массива со значениями - x
+# 2 - как только сформировали конкретный х проходим по каждому из значений и вычисляем общее значение.
+# 3 - формируем новый х
+
+# # Массив конечных данных
+# result = []
+# # Номер текущего наборы - текущий уровень
+# set_number = 0
+# def branch (combination)
+#    if set_number == general.length - 1
+#       w1 = 0
+#       w2 = 0
+#       combination.each_index do |index|
+#          w1 += combination[index]['sum_criteria']
+#          w2 += combination[index]['sum_costs']
+#       end
+#       value = w1.to_f / w2
+#       result << value
+#       combination = []
+#    else
+#       set_number += 1
+#       general[set_number].each_index do |index|
+#          combination << general[set_number][index]
+#          branch combination
+#       end
+#    end
+# end
+# a = []
+# branch a # :-D
+
+# # Массив конечных данных
+# $result = []
+# # Номер текущего наборы - текущий уровень
+# $set_number = -1
+# def branch (combination)
+#    if combination.length == $general.length
+#       w1 = 0
+#       w2 = 0
+#       combination.each_index do |index|
+#          w1 += combination[index]['sum_criteria']
+#          w2 += combination[index]['sum_costs']
+#       end
+#       value = w1.to_f / w2
+#      $result << value
+#    else
+#       $set_number += 1
+#       $general[$set_number].each_index do |index|
+#          combination << $general[$set_number][index]
+#          branch combination
+#       end
+#    end
+# end
+# a = []
+# branch a # :-D
+# puts result
