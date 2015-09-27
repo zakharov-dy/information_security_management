@@ -7,13 +7,13 @@ PATH = 'config2.yml'
 # Грузим данные из файла конфигурации
 config = YAML::load(open(PATH))
 $general = []
-count = -1
+
 config.each_key do |set_name|
    # Для удобства определяем набор средств защиты
    current_set = config[set_name]
-   # Определяем названия критериев и издержек
-   criteria = current_set['criteria']
-   costs = current_set['costs']
+   # # Определяем названия критериев и издержек
+   # criteria = current_set['criteria']
+   # costs = current_set['costs']
 
    # Для удобства определяем альтернативы конкретного набора
    alternatives = current_set['alternatives']
@@ -55,7 +55,7 @@ config.each_key do |set_name|
          end
       end
    end
-
+   set_array = []
    # Пройдемся ещё раз по каждому элементу набора для определения критетиев и издержек
    alternatives.each_key do |alternative_name|
       # Для удобства определяем конкретную альтернативу
@@ -68,9 +68,14 @@ config.each_key do |set_name|
       alternative_criteria.each_index do |criteria_index|
          min = min_criteria[criteria_index]
          max = max_criteria[criteria_index]
-         alternative_criteria[criteria_index] =
-            ( alternative_criteria[criteria_index] - min ).to_f / ( max - min )
-         alternative['sum_criteria'] += alternative_criteria[criteria_index]
+         if min != max
+            alternative_criteria[criteria_index] =
+               ( alternative_criteria[criteria_index] - min ).to_f / ( max - min )
+            alternative['sum_criteria'] += alternative_criteria[criteria_index]
+         else
+            alternative_criteria[criteria_index] = 0
+         end
+
       end
 
       alternative['sum_costs'] = 0
@@ -81,70 +86,56 @@ config.each_key do |set_name|
          # current_costs = alternative_costs[costs_index]
          min = min_costs[costs_index]
          max = max_costs[costs_index]
-         alternative_costs[costs_index] =
-            ( alternative_costs[costs_index] - min ).to_f / ( max - min )
-         alternative['sum_costs'] += alternative_costs[costs_index]
+         if min != max
+            alternative_costs[costs_index] =
+               ( alternative_costs[costs_index] - min ).to_f / ( max - min )
+            alternative['sum_costs'] += alternative_costs[costs_index]
+         else
+            alternative_costs[costs_index] = 0
+         end
       end
 
+      # Очень плохо, на скорую руку
+      alternative['name'] = alternative_name
+      set_array << alternative
    end
 
-   $general << current_set
+   $general << set_array
 end
-
+puts $general
 # Этапы:
 # 0 - каждый set записываем в массив
 # 1 - формирование массива со значениями - x
 # 2 - как только сформировали конкретный х проходим по каждому из значений и вычисляем общее значение.
 # 3 - формируем новый х
 
-# # Массив конечных данных
-# result = []
-# # Номер текущего наборы - текущий уровень
-# set_number = 0
-# def branch (combination)
-#    if set_number == general.length - 1
-#       w1 = 0
-#       w2 = 0
-#       combination.each_index do |index|
-#          w1 += combination[index]['sum_criteria']
-#          w2 += combination[index]['sum_costs']
-#       end
-#       value = w1.to_f / w2
-#       result << value
-#       combination = []
-#    else
-#       set_number += 1
-#       general[set_number].each_index do |index|
-#          combination << general[set_number][index]
-#          branch combination
-#       end
-#    end
-# end
-# a = []
-# branch a # :-D
+# Массив конечных данных
+$result = []
+# Номер текущего наборы - текущий уровень
+$combination = []
+def branch (set_number)
+   if set_number == $general.length
+      w1 = 0
+      w2 = 0
+      combination_name = ''
+      $combination.each_index do |index|
+         w1 += $combination[index]['sum_criteria']
+         w2 += $combination[index]['sum_costs']
+         combination_name += $combination[index]['name']
+      end
+      combination_object = {
+         value: w1.to_f / w2,
+         name: combination_name
+      }
+     $result << combination_object
+     $combination.pop
+   else
+      $general[set_number].each_index do |index|
+         $combination[set_number] = $general[set_number][index]
+         branch (set_number + 1)
+      end
+   end
+end
 
-# # Массив конечных данных
-# $result = []
-# # Номер текущего наборы - текущий уровень
-# $set_number = -1
-# def branch (combination)
-#    if combination.length == $general.length
-#       w1 = 0
-#       w2 = 0
-#       combination.each_index do |index|
-#          w1 += combination[index]['sum_criteria']
-#          w2 += combination[index]['sum_costs']
-#       end
-#       value = w1.to_f / w2
-#      $result << value
-#    else
-#       $set_number += 1
-#       $general[$set_number].each_index do |index|
-#          combination << $general[$set_number][index]
-#          branch combination
-#       end
-#    end
-# end
-# a = []
-# branch a # :-D
-# puts result
+branch 0
+puts $result
