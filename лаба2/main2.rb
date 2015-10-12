@@ -138,4 +138,5 @@ def branch (set_number)
 end
 
 branch 0
+$result = $result.sort_by { |hsh| hsh[:value] }
 puts $result
