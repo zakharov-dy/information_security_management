@@ -1,33 +1,67 @@
 set1:
-  # criteria: ['1', '2', '3', '4']
-  # costs: ['1', '2']
   alternatives:
-    a11_:
-      criteria: [9, 3, 3, 6, 4]
-      costs: [3, 5]
-    a12_:
-      criteria: [4, 6, 7, 3, 2]
-      costs: [4, 2]
+    TrueCrypt:
+      criteria: [0, 1, 0, 250, 1]
+      costs: [0, 1]
+    Folder_Lock:
+      criteria: [0, 0, 0, 47, 0]
+      costs: [2600, 2]
+    PGP_Desktop:
+      criteria: [1, 1, 0, 35, 0]
+      costs: [13000, 4]
+    CyberSafe_Top_Secret:
+      criteria: [1, 0, 1, 62, 1]
+      costs: [3250, 2]
+
 set2:
-  # criteria: ['1', '2', '3', '4']
-  # costs: ['1', '2']
   alternatives:
-    a21_:
-      criteria: [1, 3, 7]
-      costs: [2, 3]
-    a22_:
-      criteria: [4, 2, 1]
-      costs: [1, 2]
+      Exiland_Backup_Professional:
+         criteria: [1,0,1,0]
+         costs: [1024,2950]
+      Acronis:
+         criteria: [1,2,1,1]
+         costs: [2048,16990]
+      Clonezilla:
+         criteria: [0,0,1,1]
+         costs: [196,0]
+      Norton_ghost:
+         criteria: [1,1,1,1]
+         costs: [1024,1749]
+      HandyBackUp:
+         criteria: [1,1,0,1]
+         costs: [1024,2900]
+
 set3:
-  # criteria: ['1', '2', '3', '4']
-  # costs: ['1', '2']
   alternatives:
-    a31_:
-      criteria: [1, 3, 7, 4]
-      costs: [2, 3, 6]
-    a32_:
-      criteria: [4, 2, 1, 4]
-      costs: [1, 2, 2]
-#    a33_:
-#       criteria: [2, 2, 1, 2]
-#       costs: [1, 5, 2]
+     PKC:
+        criteria: [1,1,1]
+        costs: [1050,256]
+     FIX_UNIX:
+        criteria: [1,0,1]
+        costs: [2080,128]
+     integrity:
+        criteria: [1,0,0]
+        costs: [3300,128]
+     FIX_2:
+        criteria: [2,0,1]
+        costs: [2900,256]
+     Check:
+        criteria: [2,1,1]
+        costs: [2600,1024]
+set4:
+   alternatives:
+      Secret_net:
+         criteria: [1,1,1,0]
+         costs: [2048,7700]
+      Crypton:
+         criteria: [1,1,1,1]
+         costs: [1024,4800]
+      Dallas_lock:
+         criteria: [1,1,1,1]
+         costs: [1024,10000]
+      Akkord:
+         criteria: [0,0,0,1]
+         costs: [512, 11000]
+      Aura:
+         criteria: [1,1,0,1]
+         costs: [256, 6000]
