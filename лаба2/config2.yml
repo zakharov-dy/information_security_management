@@ -1,51 +1,51 @@
 set1:
   alternatives:
-    TrueCrypt:
+    TrueCrypt_:
       criteria: [0, 1, 0, 250, 1]
       costs: [0, 1]
-    Folder_Lock:
+    Folder_Lock_:
       criteria: [0, 0, 0, 47, 0]
       costs: [2600, 2]
-    PGP_Desktop:
+    PGP_Desktop_:
       criteria: [1, 1, 0, 35, 0]
       costs: [13000, 4]
-    CyberSafe_Top_Secret:
+    CyberSafe_Top_Secret_:
       criteria: [1, 0, 1, 62, 1]
       costs: [3250, 2]
 
 set2:
   alternatives:
-      Exiland_Backup_Professional:
+      Exiland_Backup_Professional_:
          criteria: [1,0,1,0]
          costs: [1024,2950]
-      Acronis:
+      Acronis_:
          criteria: [1,2,1,1]
          costs: [2048,16990]
-      Clonezilla:
+      Clonezilla_:
          criteria: [0,0,1,1]
          costs: [196,0]
-      Norton_ghost:
+      Norton_ghost_:
          criteria: [1,1,1,1]
          costs: [1024,1749]
-      HandyBackUp:
+      HandyBackUp_:
          criteria: [1,1,0,1]
          costs: [1024,2900]
 
 set3:
   alternatives:
-     PKC:
+     PKC_:
         criteria: [1,1,1]
         costs: [1050,256]
-     FIX_UNIX:
+     FIX_UNIX_:
         criteria: [1,0,1]
         costs: [2080,128]
-     integrity:
+     integrity_:
         criteria: [1,0,0]
         costs: [3300,128]
-     FIX_2:
+     FIX_2_:
         criteria: [2,0,1]
         costs: [2900,256]
-     Check:
+     Check_:
         criteria: [2,1,1]
         costs: [2600,1024]
 set4:

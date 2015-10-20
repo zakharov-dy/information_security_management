@@ -102,7 +102,7 @@ config.each_key do |set_name|
 
    $general << set_array
 end
-puts $general
+
 # Этапы:
 # 0 - каждый set записываем в массив
 # 1 - формирование массива со значениями - x
@@ -139,4 +139,22 @@ end
 
 branch 0
 $result = $result.sort_by { |hsh| hsh[:value] }
-puts $result
+$result.reverse!
+$general.each do |set|
+   set.each do |item_of_set|
+      sum_criteria = item_of_set['sum_criteria'].to_s
+      sum_costs = item_of_set['sum_costs'].to_s
+      name = item_of_set['name']
+      puts 'СЗИ ' + name + ' суммарный показатель защищенности:' + sum_criteria + '. Суммарные издержки: ' + sum_costs 
+   end
+end
+puts()
+puts 'Результаты:'
+1.upto(5) do |number| 
+   result = $result[number-1]
+   name = result[:name]
+   s_number = number.to_s
+   value = result[:value]
+   s_value = value.to_s
+   puts 'Выборка ' + name + ' набрала ' + s_value + ' - ' + s_number + ' место'
+end
