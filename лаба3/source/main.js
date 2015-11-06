@@ -12,7 +12,7 @@ $(document).ready(function(){
         }
     }
 });
-
+var initBranchNumber = 0;
 function _onLoadFile(json) {
     if (json != undefined && json.struct != undefined) {
         window.struct = json.struct;
@@ -24,4 +24,8 @@ function _onLoadFile(json) {
     //for (var i = 0; i < struct.length; i++) {
     //
     //}
+}
+
+ function _branch(initBranchNumber){
+    console.log(struct)
 }
