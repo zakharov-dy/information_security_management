@@ -1,6 +1,3 @@
-/**
- * Created by Дмитрий on 02.11.2015.
- */
 $(document).ready(function(){
     xhttp = new XMLHttpRequest();
     xhttp.open('GET', 'source/struct.json', true);
@@ -13,19 +10,29 @@ $(document).ready(function(){
     }
 });
 var initBranchNumber = 0;
+var result = [];
+var combination = [];
+
 function _onLoadFile(json) {
     if (json != undefined && json.struct != undefined) {
         window.struct = json.struct;
         _branch(initBranchNumber);
     }
     else {
-        alert('Что-то пошло не так');
+        alert('error');
     }
-    //for (var i = 0; i < struct.length; i++) {
-    //
-    //}
 }
 
- function _branch(initBranchNumber){
-    console.log(struct)
-}
+var _branch = function _branch(branchNumber){
+     if (branchNumber === window.struct.length) {
+        result.push(combination);
+     }
+     else {
+         var struct = window.struct;
+         for (var i = 0; i < struct[branchNumber].length; i++) {
+             combination[branchNumber] = struct[branchNumber][i];
+             _branch(branchNumber + 1);
+         }
+     }
+ };
+console.log(result);
