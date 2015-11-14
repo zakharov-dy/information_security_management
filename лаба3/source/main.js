@@ -119,6 +119,10 @@ var lr3 = {
       var myLineChart = new Chart(ctx).Line(data);
    }
 };
+var config = {
+
+};
+
 $(document).ready(function(){
    xhttp = new XMLHttpRequest();
    xhttp.open('GET', 'source/struct3.json', true);
