@@ -1,3 +1,9 @@
-.nowrap {
-    white-space: nowrap;
+.line {
+    display: inline;
+}
+.passive {
+    display: none;
+}
+input {
+    width: 75px;
 }

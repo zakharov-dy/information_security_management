@@ -1,32 +1,76 @@
 var lr3 = {
-   initBranchNumber: 0,
-   combination_set: [],
-   combination: [],
-   arrayData: [],
-   arrayP: [],
-   deltaP: 0.05,
-   lastP: 1,
+   structs: [
+      [
+         [
+            {"v1": "p"},
+            {"v3": "1-p"}
+         ],
+         [
+            {"v1": "(1-p)/2"},
+            {"v2": "(1-p)/2"},
+            {"v4": "p"}
+         ]
+      ],
+      [
+         [
+            {"v1": "p"},
+            {"v3": "1-p"}
+         ],
+         [
+            {"v1": "1/3"},
+            {"v2": "1/3"},
+            {"v3": "1/3"}
+         ],
+         [
+            {"v1": "1-p"},
+            {"v3": "p"}
+         ]
+      ],
+      [
+         [
+            {"v1": "p"},
+            {"v3": "1-p"}
+         ],
+         [
+            {"v1": "p/2"},
+            {"v2": "1-p"},
+            {"v3": "p/2"}
+         ],
+         [
+            {"v1": "(1-p)/2"},
+            {"v2": "(1-p)/2"},
+            {"v4": "p"}
+         ]
+      ]
+   ],
 
-   _onLoadFile: function (json) {
-      if (json != undefined && json.struct != undefined) {
-         this.struct = json.struct;
-         this.damage = json.damage;
-         this.chartData = json.chartData;
-         // формируем массив комбинаций для построения z
-         this._branch(this.initBranchNumber);
-         // формируем строку для каждого J
-         this._formationJ();
-         this._formArrayP();
-         this._formData();
-         // формируем график
-         this._createChart();
-         console.log(this.j_struct[0]);
-         console.log(this.j_struct[1]);
-         console.log(this.j_struct[2]);
-      }
-      else {
-         alert('error');
-      }
+   chartData: {
+      label: ["блокирование ТД", "DOS-атака на атакующую станцию", "Отсутствие реагирования"],
+      fillColor: ["rgba(220,220,220,0.2)", "rgba(151,187,205,0.2)", "rgba(70,191,189,0.2)"],
+      strokeColor: ["rgba(220,220,220,1)","rgba(151,187,205,1)","rgba(70,191,189,0.2)" ],
+      pointColor: ["rgba(220,220,220,1)",  "rgba(151,187,205,1)",  "rgba(70,191,189,0.2)"],
+      pointHighlightStroke: ["rgba(220,220,220,1)", "rgba(151,187,205,1)", "rgba(70,191,189,0.2)"]
+   },
+
+   _generateChart: function(index, damage, deltaP) {
+      this.initBranchNumber = 0;
+         this.combination_set = [];
+         this.combination = [];
+         this.arrayData = [];
+         this.lastP = 1;
+      this.struct = this.structs[index-1];
+      this.damage = damage;
+      this.deltaP = deltaP;
+      console.log(this.struct);
+      console.log(this.damage);
+      // формируем массив комбинаций для построения z
+      this._branch(this.initBranchNumber);
+      // формируем строку для каждого J
+      this._formationJ();
+      this._formArrayP();
+      this._formData();
+      // формируем график
+      this._createChart();
    },
 
    _branch: function _branch (branchNumber) {
@@ -74,6 +118,7 @@ var lr3 = {
    },
 
    _formArrayP: function () {
+      this.arrayP = [];
       var deltaP = this.deltaP,
          lastP = this.lastP;
       // Формируем массив p-шек
@@ -84,7 +129,10 @@ var lr3 = {
    },
 
    _formData: function () {
-      this.arrayData = [[],[],[]];
+      this.arrayData = [];
+      for (var k = 0; k <= this.struct.length; k++) {
+         this.arrayData.push([]);
+      }
       for ( var i = 0; i < this.j_struct.length; i++ ) {
          for ( var j = 0; j < this.arrayP.length; j++ ) {
             var p = this.arrayP[j];
@@ -115,22 +163,100 @@ var lr3 = {
          labels: this.arrayP,
          datasets: yData
       };
-      var ctx = $("#myChart").get(0).getContext("2d");
-      var myLineChart = new Chart(ctx).Line(data);
+
+      var options = {
+         bezierCurve : false
+      };
+      updateChart(data, options);
+      //$('#myChart').remove();
+      //$('#graph-container').append('<canvas id="myChart" style="width: 100%; height: 100%"></canvas>');
+      //canvas = document.querySelector('#myChart');
+
+      //if (typeof myChart != 'undefined') {
+      //   myChart.destroy();
+      //   ctx = {};
+      //}
+      //
    }
 };
-var config = {
 
-};
+function updateChart(data, options) {
+   if (typeof myChart.datasets != 'undefined') {
+      myChart.destroy();
+      ctx = document.querySelector('canvas').getContext('2d');
+      myChart = new Chart(ctx).Line(data, options);
+   }
+   else{
+      ctx = document.querySelector('canvas').getContext('2d');
+      myChart = new Chart(ctx).Line(data, options);
+   }
+}
 
 $(document).ready(function(){
-   xhttp = new XMLHttpRequest();
-   xhttp.open('GET', 'source/struct3.json', true);
-   xhttp.send();
-   xhttp.onreadystatechange = function () {
-      if (xhttp.readyState == 4 && xhttp.status == 200) {
-         json = JSON.parse(xhttp.responseText);
-         lr3._onLoadFile(json);
+   var generateDamage = function(count) {
+      var damage = {};
+      for (var i = 1; i < count+1; i++) {
+         var path = '.damage.active > .' + i + 'damage';
+         var value = +$(path).val();
+         if (typeof value === 'number' && value >= 0 ) {
+            var key = 'v' + i;
+            damage[key] = value;
+         }
+         else {
+            return false;
+         }
       }
-   }
+      return damage;
+   };
+
+   $('#chartNumber').change(function() {
+      var value = $(this).val();
+      if (value == '2' ) {
+         $('.damage4').removeClass('active');
+         $('.damage4').addClass('passive');
+         $('.damage3').removeClass('passive');
+         $('.damage3').addClass('active');
+      }
+      else {
+         $('.damage3').removeClass('active');
+         $('.damage3').addClass('passive');
+         $('.damage4').removeClass('passive');
+         $('.damage4').addClass('active');
+      }
+
+
+   });
+   $('#generateChart').click(function() {
+      var damage,
+         index = +$('#chartNumber').val(),
+         deltaP = +$('#deltaP').val();
+      if (typeof deltaP !== 'number' || deltaP <= 0 || deltaP > 1) {
+         alert('Ошибка в указании шага графика. Шаг должен быть числом от 0 до 1');
+         return;
+      }
+      switch (index) {
+         case 1:
+            damage = generateDamage(4);
+            if (!damage) {
+               alert('Ошибка в указании ущерба. Ущерб должен быть положительным числом. Например 0.5');
+               return;
+            }
+            break;
+         case 2:
+            damage = generateDamage(3);
+            if (!damage) {
+               alert('Ошибка в указании ущерба. Ущерб должен быть положительным числом. Например 0.5');
+               return;
+            }
+            break;
+         case 3:
+            damage = generateDamage(4);
+            if (!damage) {
+               alert('Ошибка в указании ущерба. Ущерб должен быть положительным числом. Например 0.5');
+               return;
+            }
+            break;
+      }
+      lr3._generateChart(index, damage, deltaP)
+   });
 });
