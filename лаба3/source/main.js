@@ -1,4 +1,8 @@
+/**
+ * Объект, содержащий в себе всю логику обработки данных
+ */
 var lr3 = {
+   // константа - массив со структурой графа.
    structs: [
       [
          [
@@ -43,7 +47,7 @@ var lr3 = {
          ]
       ]
    ],
-
+   // константа - объект для хранения массивов цветов отрисовки графиков.
    chartData: {
       label: ["блокирование ТД", "DOS-атака на атакующую станцию", "Отсутствие реагирования"],
       fillColor: ["rgba(220,220,220,0.2)", "rgba(151,187,205,0.2)", "rgba(70,191,189,0.2)"],
@@ -51,33 +55,57 @@ var lr3 = {
       pointColor: ["rgba(220,220,220,1)",  "rgba(151,187,205,1)",  "rgba(70,191,189,0.2)"],
       pointHighlightStroke: ["rgba(220,220,220,1)", "rgba(151,187,205,1)", "rgba(70,191,189,0.2)"]
    },
-
+   // константа для первого цикла функции _branch
+   initBranchNumber: 0,
+   // Константа - координата конечной точки графика по оси x.
+   lastP: 1,
+   /**
+    * Функция, управляющая обработкой данных.
+    *
+    * @param {number} index - номер графика.
+    * @param {array} damage - массив ущерба.
+    * @param {number} deltaP - шаг графика.
+    */
    _generateChart: function(index, damage, deltaP) {
-      this.initBranchNumber = 0;
-         this.combination_set = [];
-         this.combination = [];
-         this.arrayData = [];
-         this.lastP = 1;
+      // Массив - все комбинации z(вектор z). Каждый z представляет собой
+      //    строку - комбинацию из набора structs - массива со структурой графа.
+      this.combination_set = [];
+      // Массив - элемент массива combination_set для работы функции _branch.
+      this.combination = [];
+      // Массив для хранения данных по оси y
+      this.arrayData = [];
+      // Объект с текущей структурой графа, которую выбрал пользователь
       this.struct = this.structs[index-1];
+      // Массив ущерба
       this.damage = damage;
+      // Шаг графика.
       this.deltaP = deltaP;
-      console.log(this.struct);
-      console.log(this.damage);
-      // формируем массив комбинаций для построения z
+      // Формируем массив комбинаций для построения z
       this._branch(this.initBranchNumber);
-      // формируем строку для каждого J
+      // Формируем массив строк J
       this._formationJ();
-      this._formArrayP();
+      // Формируем массив данных по оси x
+      this._formArrayY();
+      // Формируем массив точек для каждого элемента массива arrayY
       this._formData();
-      // формируем график
-      this._createChart();
+      // Флормируем данные для графика и отправляем их на построение(Массив
+      //    данных для каждого из графиков, цвета графиков, шаг графика).
+      this._createDataChart();
    },
 
+   /**
+    * Функция, составляющая массив combination - всех комбинаций, каждая из
+    *    которых представляет собой строку, хранящую формулу для конкретного z.
+    *    Используются переменные:
+    *       1. combination - массив для хранения всех комбинаций
+    *       2. combination_set - массив для хранения текущей комбинации.
+    *
+    * @param {number} branchNumber - номер текущего уровня иерархии.
+    */
    _branch: function _branch (branchNumber) {
       var struct = lr3.struct,
          combination = lr3.combination;
       if (branchNumber === struct.length) {
-         //Подумать, как написать более правильно
          var clone = [];
          for (var key in combination) {
             clone[key] = combination[key];
@@ -92,6 +120,11 @@ var lr3 = {
       }
    },
 
+   /**
+    * Функция, составляющая массив j_struct - массив конкретных j. Для
+    * конкретного Ui(см. методические указания) умножает каждое z на
+    * значение С(vi), взятого из массива damage.
+    */
    _formationJ: function () {
       var combination_set = this.combination_set;
       this.j_struct = new Array(combination_set[0].length);
@@ -117,31 +150,41 @@ var lr3 = {
       }
    },
 
-   _formArrayP: function () {
-      this.arrayP = [];
+   /**
+    * Функция, составляющая массив array - массив для координат по x.
+    */
+   _formArrayY: function () {
+      this.arrayY = [];
       var deltaP = this.deltaP,
          lastP = this.lastP;
       // Формируем массив p-шек
       for (var i = 0; i <= lastP; i+= deltaP) {
-         this.arrayP.push(i.toFixed(2));
+         this.arrayY.push(i.toFixed(2));
       }
-
    },
 
+   /**
+    * Функция, составляющая массив arrayData - массив значений по Y для
+    * каждого графика.
+    */
    _formData: function () {
       this.arrayData = [];
       for (var k = 0; k <= this.struct.length; k++) {
          this.arrayData.push([]);
       }
       for ( var i = 0; i < this.j_struct.length; i++ ) {
-         for ( var j = 0; j < this.arrayP.length; j++ ) {
-            var p = this.arrayP[j];
+         for ( var j = 0; j < this.arrayY.length; j++ ) {
+            var p = this.arrayY[j];
             this.arrayData[i].push((eval(this.j_struct[i])).toFixed(2));
          }
       }
    },
 
-   _createChart: function() {
+   /**
+    * Функция формирования данных для графика. По окончании запускает
+    * функцию updateChart
+    */
+   _createDataChart: function() {
       var chartData = this.chartData,
          arrayData = this.arrayData,
          yData = [];
@@ -160,7 +203,7 @@ var lr3 = {
       }
 
       var data = {
-         labels: this.arrayP,
+         labels: this.arrayY,
          datasets: yData
       };
 
@@ -168,18 +211,16 @@ var lr3 = {
          bezierCurve : false
       };
       updateChart(data, options);
-      //$('#myChart').remove();
-      //$('#graph-container').append('<canvas id="myChart" style="width: 100%; height: 100%"></canvas>');
-      //canvas = document.querySelector('#myChart');
-
-      //if (typeof myChart != 'undefined') {
-      //   myChart.destroy();
-      //   ctx = {};
-      //}
-      //
    }
 };
 
+/**
+ * Функция формирования графика.
+ * @param {object} data - объект, содержащий структуру данных в виде,
+ * необходимом для библиотеки chartjs.
+ * @param {object} options - объект, содержащий структуру параметров в виде,
+ * необходимом для библиотеки chartjs
+ */
 function updateChart(data, options) {
    if (typeof myChart.datasets != 'undefined') {
       myChart.destroy();
@@ -191,7 +232,12 @@ function updateChart(data, options) {
       myChart = new Chart(ctx).Line(data, options);
    }
 }
-
+/**
+ * Функция, запускающаяся по завершении загрузки скрипта в браузер.
+ * Расставляет обработчики событий изменения:
+ *    состояния выбора графика - $('#chartNumber').change(function() {...});
+ *    состояния клика по кнопке - $('#generateChart').click(function() {...});
+ */
 $(document).ready(function(){
    var generateDamage = function(count) {
       var damage = {};
